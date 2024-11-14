@@ -1,0 +1,80 @@
+erDiagram
+    USER ||--o{ IMAGE_CAPTURE : captures
+    USER ||--o{ DETECTION_LOG : manages
+    USER {
+        int user_id PK
+        string username
+        string password
+        string email
+        string role
+        datetime created_at
+        datetime last_login
+    }
+
+    IMAGE_CAPTURE ||--o{ SPECIES_DETECTION : undergoes
+    IMAGE_CAPTURE {
+        int capture_id PK
+        int user_id FK
+        string image_path
+        datetime capture_date
+        string capture_location
+        string device_info
+        float image_quality
+        string capture_mode
+    }
+
+    SPECIES_DETECTION ||--o{ DETECTION_LOG : generates
+    SPECIES_DETECTION {
+        int detection_id PK
+        int capture_id FK
+        int species_id FK
+        float confidence_score
+        datetime detection_timestamp
+        string detection_status
+        string model_version
+    }
+
+    SPECIES ||--o{ SPECIES_DETECTION : identifies
+    SPECIES {
+        int species_id PK
+        string species_name
+        string scientific_name
+        string classification
+        string habitat
+        string description
+        datetime last_updated
+    }
+
+    DETECTION_LOG {
+        int log_id PK
+        int detection_id FK
+        int user_id FK
+        datetime log_timestamp
+        string action_type
+        string log_details
+        string system_status
+    }
+
+    MODEL_METADATA ||--o{ SPECIES_DETECTION : uses
+    MODEL_METADATA {
+        int model_id PK
+        string model_version
+        datetime training_date
+        float accuracy_score
+        int total_parameters
+        string architecture_type
+        string training_dataset
+        datetime last_updated
+    }
+
+    TRAINING_DATASET ||--o{ MODEL_METADATA : trains
+    TRAINING_DATASET {
+        int dataset_id PK
+        string dataset_name
+        int total_images
+        int num_classes
+        datetime created_at
+        string source
+        float validation_split
+        string augmentation_params
+    }
